@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EasyNote.Model.DbEntities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,14 +21,19 @@ namespace EasyNote
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<FilesContext>(o => o.UseInMemoryDatabase("EasyNoteDb"));
+
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
+                var context = serviceProvider.GetRequiredService<FilesContext>();
+                SeedTestData(context);
+
                 app.UseDeveloperExceptionPage();
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
@@ -53,6 +57,19 @@ namespace EasyNote
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+        }
+
+        private void SeedTestData(FilesContext dbContext)
+        {
+            dbContext.Files.Add(new FileEntity
+            {
+                Id = 1,
+                Name = "Plik1.txt",
+                Author = "t.baum",
+                Content = new byte[0]
+            });
+
+            dbContext.SaveChanges();
         }
     }
 }
