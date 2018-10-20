@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyNote
 {
-    public class FilesContext : DbContext
+    public class FilesDbContext : DbContext
     {
         public DbSet<FileEntity> Files { get; set; }
 
-        public FilesContext(DbContextOptions options) : base(options)
+        public FilesDbContext(DbContextOptions options) : base(options)
         {
         }
     }

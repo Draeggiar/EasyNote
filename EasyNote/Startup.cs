@@ -21,7 +21,7 @@ namespace EasyNote
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FilesContext>(o => o.UseInMemoryDatabase("EasyNoteDb"));
+            services.AddDbContext<FilesDbContext>(o => o.UseInMemoryDatabase("EasyNoteDb"));
 
             services.AddMvc();
         }
@@ -31,7 +31,7 @@ namespace EasyNote
         {
             if (env.IsDevelopment())
             {
-                var context = serviceProvider.GetRequiredService<FilesContext>();
+                var context = serviceProvider.GetRequiredService<FilesDbContext>();
                 SeedTestData(context);
 
                 app.UseDeveloperExceptionPage();
@@ -59,15 +59,22 @@ namespace EasyNote
             });
         }
 
-        private void SeedTestData(FilesContext dbContext)
+        private void SeedTestData(FilesDbContext dbContext)
         {
-            dbContext.Files.Add(new FileEntity
+            dbContext.Files.AddRange(new FileEntity
             {
                 Id = 1,
                 Name = "Plik1.txt",
-                Author = "t.baum",
+                Author = "a.nowak",
                 Content = new byte[0]
-            });
+            },
+                new FileEntity
+                {
+                    Id = 2,
+                    Name = "Plik2.txt",
+                    Author = "b.kowalski",
+                    Content = new byte[0]
+                });
 
             dbContext.SaveChanges();
         }
