@@ -1,11 +1,14 @@
 using System;
-using EasyNote.Model.DbEntities;
+using EasyNote.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using EasyNote.Core.Files.Interfaces;
+using EasyNote.Core.Files;
+using EasyNote.Core.Model.DbEntities;
 
 namespace EasyNote
 {
@@ -22,6 +25,9 @@ namespace EasyNote
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<FilesDbContext>(o => o.UseInMemoryDatabase("EasyNoteDb"));
+            services.AddScoped<IDbContext, FilesDbContext>();
+
+            services.AddScoped<IFilesManager, FilesManager>();
 
             services.AddMvc();
         }

@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const AotPlugin = require('@ngtools/webpack').AotPlugin;
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = (env) => {
     // Configuration in common to both client-side and server-side bundles
@@ -31,10 +32,26 @@ module.exports = (env) => {
     const clientBundleConfig = merge(sharedConfig, {
         entry: { 'main-client': './ClientApp/boot.browser.ts' },
         output: { path: path.join(__dirname, clientBundleOutputDir) },
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    use: isDevBuild ? ['style-loader', 'css-loader', 'sass-loader'] :
+                        ['to-string-loader'].concat(ExtractTextPlugin.extract({
+                            use: ["css-loader?minimize", "sass-loader"],
+                            fallback: "to-string-loader"
+                        }))
+                }
+            ]
+        },
         plugins: [
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./wwwroot/dist/vendor-manifest.json')
+            }),
+            new ExtractTextPlugin({
+                filename: "style.css",
+                disable: isDevBuild
             })
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
@@ -57,12 +74,26 @@ module.exports = (env) => {
     const serverBundleConfig = merge(sharedConfig, {
         resolve: { mainFields: ['main'] },
         entry: { 'main-server': './ClientApp/boot.server.ts' },
+        module: {
+            rules: [
+                {
+                    test: /\.scss$/,
+                    use: ['to-string-loader'].concat(ExtractTextPlugin.extract({
+                        use: ["css-loader?minimize", "sass-loader"],
+                        fallback: "to-string-loader"
+                    }))
+                }
+            ]
+        },
         plugins: [
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./ClientApp/dist/vendor-manifest.json'),
                 sourceType: 'commonjs2',
                 name: './vendor'
+            }),
+            new ExtractTextPlugin({
+                filename: "style.css"
             })
         ].concat(isDevBuild ? [] : [
             // Plugins that apply in production builds only

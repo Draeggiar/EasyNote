@@ -1,4 +1,4 @@
-﻿namespace EasyNote.Model
+﻿namespace EasyNote.Core.Model
 {
     public class File
     {

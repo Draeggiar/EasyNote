@@ -1,9 +1,9 @@
-﻿using EasyNote.Model.DbEntities;
+﻿using EasyNote.Core.Model.DbEntities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyNote
+namespace EasyNote.Core
 {
-    public class FilesDbContext : DbContext
+    public class FilesDbContext : DbContext, IDbContext
     {
         public DbSet<FileEntity> Files { get; set; }
 

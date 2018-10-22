@@ -1,4 +1,4 @@
-﻿namespace EasyNote.Model.DbEntities
+﻿namespace EasyNote.Core.Model.DbEntities
 {
     public class FileEntity
     {
