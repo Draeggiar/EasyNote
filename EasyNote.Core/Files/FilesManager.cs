@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using EasyNote.Core.Files.Interfaces;
 using EasyNote.Core.Model;
 using EasyNote.Core.Model.DbEntities;
+using EasyNote.Core.Model.Files;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyNote.Core.Files
 {
     public class FilesManager : IFilesManager
     {
+        private readonly IMapper _mapper;
         private readonly FilesDbContext _dbContext;
 
-        public FilesManager(IDbContext dbContext)
+        public FilesManager(IDbContext dbContext, IMapper mapper)
         {
+            _mapper = mapper;
             _dbContext = dbContext as FilesDbContext;
         }
 
@@ -22,28 +26,24 @@ namespace EasyNote.Core.Files
         {
             var filesFromDb = await _dbContext.Files.ToListAsync();
 
-            return filesFromDb.Select(f => new File
-            {
-                Id = f.Id,
-                Name = f.Name,
-                Author = f.Author,
-                IsLocked = false
-            });
+            return filesFromDb.Select(f => _mapper.Map<File>(f));
         }
 
-        public async Task<FileEntity> AddFile(NewFileParams fileParams)
+        public async Task<int> AddFile(FileEntity fileEntity)
         {
-            var newFile = _dbContext.Files.Add(new FileEntity
-            {
-                Name = fileParams.Name,
-                Author = fileParams.Author,
-                Content = fileParams.Content
-            }).Entity;
+            var newFileId = _dbContext.Files.Add(fileEntity).Entity.Id;
 
             if(await _dbContext.SaveChangesAsync() < 1)
                 throw new InvalidOperationException("Could not add file to database");
 
-            return newFile;
+            return newFileId;
+        }
+
+        public async Task<File> GetFileAsync(int idValue)
+        {
+            var fileEntity = await _dbContext.Files.FindAsync(idValue);
+
+            return fileEntity == null ? null : _mapper.Map<File>(fileEntity);
         }
     }
 }

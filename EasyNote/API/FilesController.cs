@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using EasyNote.Core.Files.Interfaces;
+﻿using EasyNote.Core.Files.Interfaces;
 using EasyNote.Core.Model;
+using EasyNote.Core.Model.DbEntities;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EasyNote.Core.Model.Files;
 
 namespace EasyNote.API
 {
@@ -15,25 +18,53 @@ namespace EasyNote.API
             _filesManager = filesManager;
         }
 
-        //GET /Files/List
+        //GET /files/list
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<File>))]
         [ProducesResponseType(404)]
         public async Task<IActionResult> List()
         {
             var files = await _filesManager.GetFilesListAsync();
-            if (files == null)
+            if (files == null || !files.Any())
                 return NotFound();
 
             return Ok(files);
         }
 
-        //POST Files/AddNew
+        //POST /files/create
         [HttpPost]
-        public async Task<IActionResult> AddNew([FromBody] NewFileParams newFileParams)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> Create([FromBody] NewFileParams newFileParams)
         {
-            var result = await _filesManager.AddFile(newFileParams);
-            return Ok(result);
+            if (!ModelState.IsValid)
+                return BadRequest("File name and author are required");
+
+            var newFileId = await _filesManager.AddFile(new FileEntity
+            {
+                Name = newFileParams.Name,
+                Author = newFileParams.Author,
+                Content = newFileParams.Content
+            });
+
+            return Created($"{Request.Scheme}://{Request.Host}/{nameof(Get)}/{newFileId}", null);
+        }
+
+        //GET /files/get/{id}
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(File))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> Get([FromRoute] int? id)
+        {
+            if (!id.HasValue)
+                return BadRequest("No file id specified");
+
+            var file = await _filesManager.GetFileAsync(id.Value);
+            if (file == null)
+                return NotFound(id);
+
+            return Ok(file);
         }
     }
 }

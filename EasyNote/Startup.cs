@@ -1,14 +1,15 @@
-using System;
 using EasyNote.Core;
+using EasyNote.Core.Files;
+using EasyNote.Core.Files.Interfaces;
+using EasyNote.Core.Model.DbEntities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using EasyNote.Core.Files.Interfaces;
-using EasyNote.Core.Files;
-using EasyNote.Core.Model.DbEntities;
+using System;
+using AutoMapper;
 
 namespace EasyNote
 {
@@ -26,6 +27,8 @@ namespace EasyNote
         {
             services.AddDbContext<FilesDbContext>(o => o.UseInMemoryDatabase("EasyNoteDb"));
             services.AddScoped<IDbContext, FilesDbContext>();
+
+            services.AddAutoMapper();
 
             services.AddScoped<IFilesManager, FilesManager>();
 
@@ -69,17 +72,15 @@ namespace EasyNote
         {
             dbContext.Files.AddRange(new FileEntity
             {
-                Id = 1,
                 Name = "Plik1.txt",
                 Author = "a.nowak",
-                Content = new byte[0]
+                Content = "coœ"
             },
                 new FileEntity
                 {
-                    Id = 2,
                     Name = "Plik2.txt",
                     Author = "b.kowalski",
-                    Content = new byte[0]
+                    Content = string.Empty
                 });
 
             dbContext.SaveChanges();
