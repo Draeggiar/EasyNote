@@ -60,9 +60,10 @@ li .glyphicon {
                     }
 
                     &.btn-add-new {
-                        position: fixed;
-                        width: 100%;
+                        position: absolute;
+                        width: calc(100% - 12px);
                         bottom: 0;
+                        margin-right: 10px;
                     }
                 }
             }

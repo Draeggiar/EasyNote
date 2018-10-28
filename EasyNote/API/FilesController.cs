@@ -1,11 +1,10 @@
 ﻿using EasyNote.Core.Files.Interfaces;
-using EasyNote.Core.Model;
 using EasyNote.Core.Model.DbEntities;
+using EasyNote.Core.Model.Files;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EasyNote.Core.Model.Files;
 
 namespace EasyNote.API
 {
@@ -40,7 +39,7 @@ namespace EasyNote.API
             if (!ModelState.IsValid)
                 return BadRequest("File name and author are required");
 
-            var newFileId = await _filesManager.AddFile(new FileEntity
+            var newFileId = await _filesManager.AddFileAsync(new FileEntity
             {
                 Name = newFileParams.Name,
                 Author = newFileParams.Author,
@@ -65,6 +64,34 @@ namespace EasyNote.API
                 return NotFound(id);
 
             return Ok(file);
+        }
+
+        //PUT /files/update
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> Update([FromBody] File file)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("No file id specified");
+
+            await _filesManager.UpdateFileAsync(file);
+
+            return Ok();
+        }
+
+        //GET /files/delete/{id}
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> Delete([FromRoute] int? id)
+        {
+            if (!id.HasValue)
+                return BadRequest("No file id specified");
+
+            await _filesManager.DeleteFileAsync(id.Value);
+
+            return Ok();
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using EasyNote.Core.Files.Interfaces;
-using EasyNote.Core.Model;
 using EasyNote.Core.Model.DbEntities;
 using EasyNote.Core.Model.Files;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EasyNote.Core.Files
 {
@@ -29,11 +28,11 @@ namespace EasyNote.Core.Files
             return filesFromDb.Select(f => _mapper.Map<File>(f));
         }
 
-        public async Task<int> AddFile(FileEntity fileEntity)
+        public async Task<int> AddFileAsync(FileEntity fileEntity)
         {
             var newFileId = _dbContext.Files.Add(fileEntity).Entity.Id;
 
-            if(await _dbContext.SaveChangesAsync() < 1)
+            if (await _dbContext.SaveChangesAsync() < 1)
                 throw new InvalidOperationException("Could not add file to database");
 
             return newFileId;
@@ -44,6 +43,23 @@ namespace EasyNote.Core.Files
             var fileEntity = await _dbContext.Files.FindAsync(idValue);
 
             return fileEntity == null ? null : _mapper.Map<File>(fileEntity);
+        }
+
+        public async Task UpdateFileAsync(File file)
+        {
+            var fileEntity = _mapper.Map<FileEntity>(file);
+
+            //TODO TB Wydajność - sprawdzanie czy encja faktycznie się zmieniła
+            _dbContext.Entry(fileEntity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteFileAsync(int fileId)
+        {
+            var fileEntity = await _dbContext.Files.FindAsync(fileId);
+
+            _dbContext.Files.Remove(fileEntity);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace EasyNote.Core.Model.Files
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EasyNote.Core.Model.Files
 {
     public class File
     {
+        [Required]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Content { get; set; }
