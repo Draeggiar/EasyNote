@@ -6,5 +6,6 @@ namespace EasyNote.Core
     public interface IDbContext
     {
         DbSet<FileEntity> Files { get; set; }
+        DbSet<UserEntity> Users { get; set; }
     }
 }

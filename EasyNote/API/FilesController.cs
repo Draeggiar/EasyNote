@@ -1,13 +1,15 @@
-﻿using EasyNote.Core.Files.Interfaces;
-using EasyNote.Core.Model.DbEntities;
+﻿using EasyNote.Core.Model.DbEntities;
 using EasyNote.Core.Model.Files;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EasyNote.Core.Logic.Files;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyNote.API
 {
+    [Authorize(Policy = "ApiUser")]
     public class FilesController : Controller
     {
         private readonly IFilesManager _filesManager;

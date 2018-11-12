@@ -1,9 +1,9 @@
-﻿using EasyNote.Core.Model.DbEntities;
-using EasyNote.Core.Model.Files;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using EasyNote.Core.Model.DbEntities;
+using EasyNote.Core.Model.Files;
 
-namespace EasyNote.Core.Files.Interfaces
+namespace EasyNote.Core.Logic.Files
 {
     public interface IFilesManager
     {

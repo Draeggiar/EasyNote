@@ -1,24 +1,23 @@
-﻿using AutoMapper;
-using EasyNote.Core.Files.Interfaces;
-using EasyNote.Core.Model.DbEntities;
-using EasyNote.Core.Model.Files;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using EasyNote.Core.Model.DbEntities;
+using EasyNote.Core.Model.Files;
+using Microsoft.EntityFrameworkCore;
 
-namespace EasyNote.Core.Files
+namespace EasyNote.Core.Logic.Files
 {
     public class FilesManager : IFilesManager
     {
         private readonly IMapper _mapper;
-        private readonly FilesDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public FilesManager(IDbContext dbContext, IMapper mapper)
         {
             _mapper = mapper;
-            _dbContext = dbContext as FilesDbContext;
+            _dbContext = dbContext as ApplicationDbContext;
         }
 
         public async Task<IEnumerable<File>> GetFilesListAsync()

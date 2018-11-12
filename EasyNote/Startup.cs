@@ -1,15 +1,20 @@
+using AutoMapper;
 using EasyNote.Core;
-using EasyNote.Core.Files;
-using EasyNote.Core.Files.Interfaces;
+using EasyNote.Core.Logic.Files;
+using EasyNote.Core.Model.Accounts;
 using EasyNote.Core.Model.DbEntities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System;
-using AutoMapper;
+using System.Text;
+using EasyNote.Core.Logic.Accounts;
 
 namespace EasyNote
 {
@@ -25,12 +30,17 @@ namespace EasyNote
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FilesDbContext>(o => o.UseInMemoryDatabase("EasyNoteDb"));
-            services.AddScoped<IDbContext, FilesDbContext>();
+            services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("EasyNote")));
+            services.AddScoped<IDbContext, ApplicationDbContext>();
 
             services.AddAutoMapper();
 
+            AddIdentity(services);
+            ConfigureAuthentication(services);
+
             services.AddScoped<IFilesManager, FilesManager>();
+            services.AddScoped<IAccountsManager, AccountsManager>();
 
             services.AddMvc();
         }
@@ -40,9 +50,6 @@ namespace EasyNote
         {
             if (env.IsDevelopment())
             {
-                var context = serviceProvider.GetRequiredService<FilesDbContext>();
-                SeedTestData(context);
-
                 app.UseDeveloperExceptionPage();
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
@@ -54,6 +61,7 @@ namespace EasyNote
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseAuthentication();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
@@ -68,22 +76,69 @@ namespace EasyNote
             });
         }
 
-        private void SeedTestData(FilesDbContext dbContext)
+        private static void AddIdentity(IServiceCollection services)
         {
-            dbContext.Files.AddRange(new FileEntity
+            var builder = services.AddIdentityCore<UserEntity>(o =>
             {
-                Name = "Plik1.txt",
-                Author = "a.nowak",
-                Content = "coœ"
-            },
-                new FileEntity
-                {
-                    Name = "Plik2.txt",
-                    Author = "b.kowalski",
-                    Content = string.Empty
-                });
+                // configure identity options
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 4;
+            });
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+        }
 
-            dbContext.SaveChanges();
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
+            var secretKey = "iNivDmHLpUA223sqsfhqGbMRdRj1PVkH";
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+
+            // Configure JwtIssuerOptions
+            services.Configure<JwtIssuerOptions>(options =>
+            {
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+            });
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
+
+            // api user claim policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiUser", policy => policy.RequireClaim(JwtFactory.JwtClaimIdentifiers.Rol, JwtFactory.JwtClaims.ApiAccess));
+            });
+
+            services.AddSingleton<IJwtFactory, JwtFactory>();
         }
     }
 }
