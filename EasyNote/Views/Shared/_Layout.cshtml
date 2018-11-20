@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EasyNote</title>
-    <base href="~/" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - EasyNote</title>
+  <base href="~/" />
 
-    <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/dist/style.css" asp-append-version="true" />
 </head>
 <body>
-    @RenderBody()
+  @RenderBody()
+  <script type="text/javascript" src="~/dist/runtime.js" asp-append-version="true"></script>
+  <script type="text/javascript" src="~/dist/polyfills.js" asp-append-version="true"></script>
+  <script type="text/javascript" src="~/dist/styles.js" asp-append-version="true"></script>
+  <script type="text/javascript" src="~/dist/vendor.js" asp-append-version="true"></script>
+  <script type="text/javascript" src="~/dist/main.js" asp-append-version="true"></script>
 
-    @RenderSection("scripts", required: false)
+  @RenderSection("scripts", required: false)
 </body>
 </html>
