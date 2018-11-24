@@ -74,14 +74,14 @@ namespace EasyNote
                   defaults: new { controller = "Home", action = "Index" });
       });
 
-      //app.UseSpa(spa =>
-      //{
-      //  spa.Options.SourcePath = "ClientApp";
-      //  if (env.IsDevelopment())
-      //  {
-      //    spa.UseAngularCliServer(npmScript: "start");
-      //  }
-      //});
+      app.UseSpa(spa =>
+      {
+        spa.Options.SourcePath = "ClientApp";
+        if (env.IsDevelopment())
+        {
+          spa.UseAngularCliServer(npmScript: "start");
+        }
+      });
     }
 
     private static void AddIdentity(IServiceCollection services)
