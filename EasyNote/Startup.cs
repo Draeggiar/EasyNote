@@ -14,10 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IO;
 using System.Text;
-using Microsoft.AspNetCore.SpaServices.Webpack;
-using Microsoft.Extensions.FileProviders;
 
 namespace EasyNote
 {
@@ -57,7 +54,7 @@ namespace EasyNote
       }
       else
       {
-        app.UseExceptionHandler("/Home/Error");
+        app.UseExceptionHandler("/Error");
       }
 
       app.UseAuthentication();
@@ -88,8 +85,8 @@ namespace EasyNote
     {
       var builder = services.AddIdentityCore<UserEntity>(o =>
       {
-              // configure identity options
-              o.Password.RequireDigit = false;
+        // configure identity options
+        o.Password.RequireDigit = false;
         o.Password.RequireLowercase = false;
         o.Password.RequireUppercase = false;
         o.Password.RequireNonAlphanumeric = false;
