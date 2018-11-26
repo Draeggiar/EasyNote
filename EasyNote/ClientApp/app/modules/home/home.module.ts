@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { AccountModule } from '../account/account.module';
 import { AppRoutingModule } from 'ClientApp/app/app-routing.module';
+import { UserService } from 'ClientApp/app/services/user.service';
 
 @NgModule({
   declarations: [HomeComponent],
@@ -11,5 +12,6 @@ import { AppRoutingModule } from 'ClientApp/app/app-routing.module';
     AccountModule,
     AppRoutingModule,
   ],
+  providers: [UserService]
 })
 export class HomeModule { }

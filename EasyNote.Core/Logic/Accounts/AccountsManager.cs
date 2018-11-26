@@ -42,43 +42,45 @@ namespace EasyNote.Core.Logic.Accounts
 
         public async Task<string> GetUserTokenAsync(CredentialsParams credentials)
         {
-            var identity = await GetClaimsIdentity(credentials.Email, credentials.Password);
+            var identity = await GetClaimsIdentity(credentials);
             if (identity == null)
                 throw new AuthenticationException("Invalid username or password");
 
-            return await GenerateJwt(identity, _jwtFactory, credentials.Email, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            return await GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions);
         }
 
-        private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
+        private async Task<ClaimsIdentity> GetClaimsIdentity(CredentialsParams credentials)
         {
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(credentials.Email) || string.IsNullOrEmpty(credentials.Password))
                 return await Task.FromResult<ClaimsIdentity>(null);
 
             // get the user to verify
-            var userToVerify = _usersManager.Users.FirstOrDefault(u => u.Email == userName);
+            var userToVerify = _usersManager.Users.FirstOrDefault(u => u.Email == credentials.Email);
 
             if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
 
             // check the credentials
-            if (await _usersManager.CheckPasswordAsync(userToVerify, password))
+            if (await _usersManager.CheckPasswordAsync(userToVerify, credentials.Password))
             {
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
+                credentials.UserName = userToVerify.UserName;
+                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userToVerify.Email, userToVerify.Id));
             }
 
             // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
         }
 
-        private async Task<string> GenerateJwt(ClaimsIdentity identity, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions, JsonSerializerSettings serializerSettings)
+        private async Task<string> GenerateJwt(ClaimsIdentity identity, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions)
         {
             var response = new
             {
                 id = identity.Claims.Single(c => c.Type == "id").Value,
-                auth_token = await jwtFactory.GenerateEncodedToken(userName, identity),
-                expires_in = (int)jwtOptions.ValidFor.TotalSeconds
+                authToken = await jwtFactory.GenerateEncodedToken(userName, identity),
+                expiresIn = (int)jwtOptions.ValidFor.TotalSeconds,
+                userName
             };
 
-            return JsonConvert.SerializeObject(response, serializerSettings);
+            return JsonConvert.SerializeObject(response);
         }
     }
 }

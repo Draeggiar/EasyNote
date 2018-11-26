@@ -1,12 +1,13 @@
 import { throwError } from 'rxjs';
 
-export abstract class BaseService {  
-    
-    constructor() { }
+export abstract class BaseService {
 
-    protected handleError(error: any) {
+  constructor() { }
+
+  protected handleError(error: any) {
+    return throwError(error);
     var applicationError = error.headers.get('Application-Error');
-
+    
     // either applicationError in header or model error in body
     if (applicationError) {
       return throwError(applicationError);

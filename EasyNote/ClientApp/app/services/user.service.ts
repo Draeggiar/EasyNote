@@ -11,30 +11,23 @@ export class UserService extends BaseService {
 
   baseUrl: string = '';
 
-  // Observable navItem source
-  private _authNavStatusSource = new BehaviorSubject<boolean>(false);
-  // Observable navItem stream
-  authNavStatus$ = this._authNavStatusSource.asObservable();
-
   private loggedIn = false;
+  private loggedUser = '';
 
   constructor(private http: Http, private configService: ConfigService) {
     super();
     this.loggedIn = !!localStorage.getItem('auth_token');
-    // ?? not sure if this the best way to broadcast the status but seems to resolve issue on page refresh where auth status is lost in
-    // header component resulting in authed user nav links disappearing despite the fact user is still logged in
-    this._authNavStatusSource.next(this.loggedIn);
+    this.loggedUser = localStorage.getItem('loggedUser');
     this.baseUrl = configService.getApiURI();
   }
 
-  register(email: string, password: string): Observable<boolean> {
-    let body = JSON.stringify({ email, password });
+  register(email: string, password: string, userName: string): Observable<boolean> {
+    let body = JSON.stringify({ email, password, userName });
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
     return this.http.post(this.baseUrl + "/accounts/register", body, options)
-      .pipe(map(res => true),
-        catchError(this.handleError));
+      .pipe(map(res => true));
   }
 
   login(email, password) {
@@ -49,21 +42,23 @@ export class UserService extends BaseService {
       .pipe(
         map(res => res.json()),
         map(res => {
-          localStorage.setItem('auth_token', res.auth_token);
+          localStorage.setItem('auth_token', res.authToken);
+          localStorage.setItem('loggedUser', res.userName);
           this.loggedIn = true;
-          this._authNavStatusSource.next(true);
           return true;
-        }),
-        catchError(this.handleError));
+        }));
   }
 
   logout() {
     localStorage.removeItem('auth_token');
     this.loggedIn = false;
-    this._authNavStatusSource.next(false);
   }
 
   isLoggedIn() {
     return this.loggedIn;
+  }
+
+  getNameOfLoggedUser() {
+    return this.loggedUser;
   }
 }
