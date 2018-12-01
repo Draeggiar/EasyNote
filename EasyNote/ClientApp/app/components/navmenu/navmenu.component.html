@@ -12,13 +12,14 @@
     <div class='clearfix'></div>
     <div class='navbar-collapse collapse'>
       <ul class='nav navbar-nav'>
-          <li [routerLinkActive]="['link-active']">
-              <a [routerLink]="['/home']">
-                  <span class='glyphicon glyphicon-home'></span> Home
-              </a>
-          </li>
+        <li [routerLinkActive]="['link-active']">
+          <a [routerLink]="['/home']">
+            <span class='glyphicon glyphicon-home'></span> Home
+          </a>
+        </li>
+       
         <li [routerLinkActive]="['link-active']" class='btn-add-new'>
-          <a [routerLink]="['/text-editor']">
+          <a [routerLink]="['/adding-file']">
             <span class='glyphicon glyphicon-plus'></span> Nowy plik
           </a>
         </li>
