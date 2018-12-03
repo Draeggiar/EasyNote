@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EasyNote.API
 {
-    [Authorize(Policy = "ApiUser")]
+   
     public class FilesController : Controller
     {
         private readonly IFilesManager _filesManager;

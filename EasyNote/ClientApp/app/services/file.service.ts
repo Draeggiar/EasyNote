@@ -27,15 +27,24 @@ export class FileService extends BaseService {
     this.baseUrl = configService.getApiURI();
   }
 
-  save(name: string, content: string): Observable<boolean> {
-    let body = JSON.stringify({ name, content });
+  save(name: string, author: string, content: string): Observable<boolean> {
+    let body = JSON.stringify({ name,author, content });
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this.baseUrl + "/api/FilesController", body, options)
+    return this.http.post(this.baseUrl + "/API/FilesController/files/create", body, options)
       .pipe(map(res => true),
         catchError(this.handleError));
   }
+ // get(name: string, author: string, content: string): Observable<boolean> {
+ //   let body = JSON.stringify({ name,author, content });
+  //  let headers = new Headers({ 'Content-Type': 'application/json' });
+ //   let options = new RequestOptions({ headers: headers });
+
+  //  return this.http.get(this.baseUrl + "/API/FilesController/files/list")
+  //    .subscribe(res => true),
+  //      catchError(this.handleError));
+  //}
 
   
 }

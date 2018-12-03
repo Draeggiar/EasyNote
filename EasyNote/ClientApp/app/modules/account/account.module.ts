@@ -6,10 +6,12 @@ import { LoginFormComponent } from '../account/login-form/login-form.component';
 import { UserService } from 'ClientApp/app/services/user.service';
 import { SharedModule } from '../shared/shared.module';
 
+
 @NgModule({
   declarations: [
     RegistrationFormComponent,
     LoginFormComponent,
+    
   ],
   imports: [
     CommonModule,
@@ -18,7 +20,8 @@ import { SharedModule } from '../shared/shared.module';
   ],
   exports: [
     RegistrationFormComponent,
-    LoginFormComponent
+    LoginFormComponent,
+    
   ],
   providers: [UserService]
 })

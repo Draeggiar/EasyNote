@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+}
+#textbox {
+    width: 100vw;
+    height: 100vh;
+    font-size: 12pt;
+   
+    /* Center text with flexbox */
+    display: flex;
+   
+}

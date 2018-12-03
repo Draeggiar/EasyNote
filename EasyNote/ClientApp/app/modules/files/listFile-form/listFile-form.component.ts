@@ -5,33 +5,33 @@ import { FileAdd } from '../model/file.add.interface';
 import { FileService } from '../../../services/file.service';
 
 @Component({
-  selector: 'app-registration-form',
-  templateUrl: './registration-form.component.html',
-  styleUrls: ['./registration-form.component.scss']
+  selector: 'app-ListFile-form',
+  templateUrl: './listFile-form.component.html',
+  styleUrls: ['./listFile-form.component.scss']
 })
-export class AddingFileComponent implements OnInit {
+export class ListFileFormComponent implements OnInit {
 
   errors: string;
   isRequesting: boolean;
   submitted: boolean = false;
 
-  constructor(private fileService: FileService, @Inject('BASE_URL') baseUrl: string, private router: Router) { }
+  constructor(private fileService: FileService,  private router: Router) { }
 
   ngOnInit() {
   }
 
-  addFile({ value, valid }: { value: FileAdd, valid: boolean }) {
+  save({ value, valid }: { value: FileAdd, valid: boolean }) {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = '';
     if (valid) {
-      this.fileService.save(value.name, value.content)
+      this.fileService.save(value.name, value.author, value.content)
         .pipe(
           finalize(() => this.isRequesting = false))
         .subscribe(
           result => {
             if (result) {
-              this.router.navigate(['/text-edit'], { queryParams: { brandNew: true, name: value.name } });
+              this.router.navigate(['/home']);
             }
           },
           errors => this.errors = errors);
