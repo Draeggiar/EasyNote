@@ -10,6 +10,7 @@ export class NavmenuComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    //TODO Wyświetlanie plików tylko dla zalogowanych
   }
 
 }

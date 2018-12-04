@@ -6,11 +6,14 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { NavmenuComponent } from './components/navmenu/navmenu.component';
 import { ConfigService } from './services/config.service';
+import { FilesListComponent } from './components/files-list/files-list.component';
+import { FilesService } from './services/files.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavmenuComponent,
+    FilesListComponent,
   ],
   imports: [
     BrowserModule,
@@ -18,7 +21,7 @@ import { ConfigService } from './services/config.service';
     HomeModule,
     HttpModule,
   ],
-  providers: [ConfigService],
+  providers: [ConfigService, FilesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

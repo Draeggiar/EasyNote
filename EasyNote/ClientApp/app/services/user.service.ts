@@ -3,11 +3,10 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ConfigService } from './config.service';
-import { BaseService } from "./base.service";
 
 @Injectable()
 
-export class UserService extends BaseService {
+export class UserService {
 
   baseUrl: string = '';
 
@@ -15,7 +14,6 @@ export class UserService extends BaseService {
   private loggedUser = '';
 
   constructor(private http: Http, private configService: ConfigService) {
-    super();
     this.loggedIn = !!localStorage.getItem('auth_token');
     this.loggedUser = localStorage.getItem('loggedUser');
     this.baseUrl = configService.getApiURI();
@@ -51,6 +49,7 @@ export class UserService extends BaseService {
 
   logout() {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('loggedUser');
     this.loggedIn = false;
   }
 

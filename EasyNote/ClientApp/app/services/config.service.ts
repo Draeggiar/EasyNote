@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Headers } from '@angular/http';
  
 @Injectable()
 export class ConfigService {
@@ -11,6 +12,14 @@ export class ConfigService {
  
      getApiURI() {
          return this._apiURI;
-     }    
+     }   
+     
+     createAuthHeaders() : Headers{
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let authToken = localStorage.getItem('auth_token');
+        headers.append('Authorization', `Bearer ${authToken}`);
+        return headers;
+     }
 }
  
