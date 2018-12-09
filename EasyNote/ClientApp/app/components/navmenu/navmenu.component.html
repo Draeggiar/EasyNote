@@ -14,13 +14,15 @@
       <ul class='nav navbar-nav'>
         <li [routerLinkActive]="['link-active']">
           <a [routerLink]="['/home']">
-            <span class='glyphicon glyphicon-home'></span> Home
+            <span class='glyphicon glyphicon-home'></span> Strona główna
           </a>
-        </li>
-       
+        </li>   
+
+        <files-list></files-list>
+
         <li [routerLinkActive]="['link-active']" class='btn-add-new'>
           <a [routerLink]="['/addingFile']">
-            <span class='glyphicon glyphicon-plus'></span> Zapisz plik
+            <span class='glyphicon glyphicon-plus'></span> Nowy plik
           </a>
         </li>
       </ul>

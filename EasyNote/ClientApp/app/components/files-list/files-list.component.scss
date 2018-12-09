@@ -1,0 +1,34 @@
+.files-container {
+  border-top: 1px solid #444;
+  padding: 0px;
+  height: 100%;
+
+  a {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  >ul {
+    float: none;
+
+    >li {
+      float: none;
+      font-size: 15px;
+      margin: 6px;
+
+      >a {
+        padding: 10px 16px;
+        border-radius: 4px;
+      }
+
+      &.link-active {
+        >a {
+          background-color: #4189c7;
+          color: white;
+        }
+      }
+    }
+  }
+}

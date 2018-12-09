@@ -6,11 +6,11 @@ import { FilesService } from '../../../services/files.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-addingFile-form',
-  templateUrl: './addingFile-form.component.html',
-  styleUrls: ['./addingFile-form.component.scss']
+  selector: 'app-editFile-form',
+  templateUrl: './editFile-form.component.html',
+  styleUrls: ['./editFile-form.component.scss']
 })
-export class AddingFileFormComponent implements OnInit {
+export class EditFileFormComponent implements OnInit {
 
   errors: string;
   isRequesting: boolean;
@@ -21,11 +21,21 @@ export class AddingFileFormComponent implements OnInit {
   constructor(private filesService: FilesService) {
 
   }
+
+  getFile({ value}: { value: FileAdd}) {
+    this.submitted = true;
+    this.isRequesting = true;
+    this.errors = '';
+    this.file = this.filesService.getFile( value.id);
+   
+
+
+  }
   saveFile({ value}: { value: FileAdd}) {
     this.submitted = true;
     this.isRequesting = true;
     this.errors = '';
-    this.file = this.filesService.saveFile( value.name , value.author, value.content);
+    this.file = this.filesService.saveFile( value.id ,value.content);
    
 
 

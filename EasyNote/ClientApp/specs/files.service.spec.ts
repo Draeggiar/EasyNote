@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { FilesService } from 'ClientApp/app/services/files.service';
 
-import { BaseService } from '../app/services/base.service';
-
-describe('BaseService', () => {
+describe('FilesService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BaseService = TestBed.get(BaseService);
+    const service: FilesService = TestBed.get(FilesService);
     expect(service).toBeTruthy();
   });
 });

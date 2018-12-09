@@ -1,22 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListFileFormComponent } from './listFile-form.component';
+import { AddingFileFormComponent } from './addingFile-form.component';
 
 
 
 describe('AddingFileFormComponent', () => {
-  let component: ListFileFormComponent;
-  let fixture: ComponentFixture<ListFileFormComponent>;
+  let component: AddingFileFormComponent;
+  let fixture: ComponentFixture<AddingFileFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListFileFormComponent ]
+      declarations: [ AddingFileFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ListFileFormComponent);
+    fixture = TestBed.createComponent(AddingFileFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

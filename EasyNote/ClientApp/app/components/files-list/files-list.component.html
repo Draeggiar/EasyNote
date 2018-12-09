@@ -1,0 +1,9 @@
+<div class="files-container">
+  <ul *ngIf="filesList | async as files else empty" class="nav navbar-nav">
+    <li *ngFor="let file of files">
+      <a>
+        <span class='glyphicon glyphicon-file'></span> {{file.name}}
+      </a>
+    </li>
+  </ul>
+</div>

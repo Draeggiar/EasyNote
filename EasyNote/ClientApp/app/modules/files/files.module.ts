@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
-import { FileService } from 'ClientApp/app/services/file.service';
+import { FilesService } from 'ClientApp/app/services/files.service';
 import { AddingFileFormComponent } from './addingFile-form/addingFile-form.component';
-import { ListFileFormComponent } from './listFile-form/listFile-form.component';
+import { EditFileFormComponent } from './editFile-form/editFile-form.component';
+
 
 
 @NgModule({
   declarations: [
     AddingFileFormComponent,
-    ListFileFormComponent,
-    
+    EditFileFormComponent
   ],
   imports: [
     CommonModule,
@@ -20,8 +20,8 @@ import { ListFileFormComponent } from './listFile-form/listFile-form.component';
   ],
   exports: [
     AddingFileFormComponent,
-    ListFileFormComponent,
+    EditFileFormComponent,
   ],
-  providers: [FileService]
+  providers: [FilesService]
 })
 export class FilesModule { }
