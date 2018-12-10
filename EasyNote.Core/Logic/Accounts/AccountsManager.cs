@@ -33,7 +33,7 @@ namespace EasyNote.Core.Logic.Accounts
             var userIdentity = _mapper.Map<UserEntity>(credentialsParams);
 
             var result = await _usersManager.CreateAsync(userIdentity, credentialsParams.Password);
-            if (result.Succeeded)
+            if (!result.Succeeded)
                 throw new System.Exception("Cannot add user");
 
             await _dbContext.Users.AddAsync(userIdentity);
@@ -80,7 +80,7 @@ namespace EasyNote.Core.Logic.Accounts
                 userName
             };
 
-            return JsonConvert.SerializeObject(response);
+            return JsonConvert.SerializeObject(response, Formatting.None);
         }
     }
 }

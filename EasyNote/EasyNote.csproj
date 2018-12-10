@@ -12,6 +12,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
   </ItemGroup>
@@ -29,13 +30,5 @@
     <ProjectReference Include="..\EasyNote.Core\EasyNote.Core.csproj" />
   </ItemGroup>
 
-<Target Name="Build Angular Debug" Condition="'$(Configuration)'=='Debug'" BeforeTargets="Build">
-    <Message Text="* * * * * * Building Debug Angular App * * * * * *" Importance="high" />
-    <Exec Command="ng build" />
-</Target>
 
-<Target Name="Build Angular Release" Condition="'$(Configuration)'=='Release'" BeforeTargets="Build">
-    <Message Text="* * * * * * Building Release Angular App * * * * * *" Importance="high" />
-    <Exec Command="ng build --prod --aot" />
-</Target>
 </Project>

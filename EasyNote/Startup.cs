@@ -4,6 +4,7 @@ using EasyNote.Core.Logic.Accounts;
 using EasyNote.Core.Logic.Files;
 using EasyNote.Core.Model.Accounts;
 using EasyNote.Core.Model.DbEntities;
+using EasyNote.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +43,9 @@ namespace EasyNote
       services.AddScoped<IFilesManager, FilesManager>();
       services.AddScoped<IAccountsManager, AccountsManager>();
 
+      services.AddSignalR();
       services.AddMvc();
+      
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +62,11 @@ namespace EasyNote
 
       app.UseAuthentication();
       app.UseStaticFiles();
+
+      app.UseSignalR(routes =>
+      {
+        routes.MapHub<EasyNoteHub>("/easynotehub");
+      });
 
       app.UseMvc(routes =>
       {

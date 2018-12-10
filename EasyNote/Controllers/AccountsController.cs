@@ -1,4 +1,4 @@
-﻿using EasyNote.Core.Logic.Accounts;
+using EasyNote.Core.Logic.Accounts;
 using EasyNote.Core.Model.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
@@ -41,7 +41,8 @@ namespace EasyNote.Controllers
             try
             {
                 var token = await _accountsManager.GetUserTokenAsync(credentials);
-                return new OkObjectResult(token);
+        var deserialized = Newtonsoft.Json.JsonConvert.DeserializeObject(token);
+                return new OkObjectResult(deserialized);
             }
             catch (AuthenticationException)
             {
