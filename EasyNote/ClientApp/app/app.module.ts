@@ -7,13 +7,12 @@ import { HomeModule } from './modules/home/home.module';
 import { NavmenuComponent } from './components/navmenu/navmenu.component';
 import { ConfigService } from './services/config.service';
 import { FilesListComponent } from './components/files-list/files-list.component';
-import { FilesService } from './services/files.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavmenuComponent,
-    FilesListComponent,
+    FilesListComponent
   ],
   imports: [
     BrowserModule,
@@ -21,7 +20,7 @@ import { FilesService } from './services/files.service';
     HomeModule,
     HttpModule,
   ],
-  providers: [ConfigService, FilesService],
+  providers: [ConfigService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

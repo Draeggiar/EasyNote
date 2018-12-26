@@ -19,7 +19,8 @@ namespace EasyNote.Core.Logic.Accounts
         private readonly IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
 
-        public AccountsManager(IDbContext dbContext, IMapper mapper, UserManager<UserEntity> usersManager, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
+        public AccountsManager(IDbContext dbContext, IMapper mapper, UserManager<UserEntity> usersManager,
+            IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions)
         {
             _dbContext = dbContext as ApplicationDbContext;
             _mapper = mapper;
@@ -63,14 +64,16 @@ namespace EasyNote.Core.Logic.Accounts
             if (await _usersManager.CheckPasswordAsync(userToVerify, credentials.Password))
             {
                 credentials.UserName = userToVerify.UserName;
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userToVerify.Email, userToVerify.Id));
+                return await Task.FromResult(
+                    _jwtFactory.GenerateClaimsIdentity(userToVerify.Email, userToVerify.Id));
             }
 
             // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
         }
 
-        private async Task<string> GenerateJwt(ClaimsIdentity identity, IJwtFactory jwtFactory, string userName, JwtIssuerOptions jwtOptions)
+        private async Task<string> GenerateJwt(ClaimsIdentity identity, IJwtFactory jwtFactory, string userName,
+            JwtIssuerOptions jwtOptions)
         {
             var response = new
             {

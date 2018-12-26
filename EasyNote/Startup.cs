@@ -28,7 +28,6 @@ namespace EasyNote
 
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
@@ -45,15 +44,17 @@ namespace EasyNote
 
       services.AddSignalR();
       services.AddMvc();
-      
+      services.AddCors();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
     {
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+        app.UseCors(builder =>
+          builder.AllowAnyOrigin()
+            .AllowAnyHeader());
       }
       else
       {
@@ -130,7 +131,7 @@ namespace EasyNote
         IssuerSigningKey = signingKey,
 
         RequireExpirationTime = false,
-        ValidateLifetime = true,
+        ValidateLifetime = false,
         ClockSkew = TimeSpan.Zero
       };
 

@@ -1,7 +1,7 @@
 <div class="files-container">
   <ul *ngIf="filesList | async as files else empty" class="nav navbar-nav">
-    <li *ngFor="let file of files">
-      <a>
+    <li *ngFor="let file of files" [routerLinkActive]="['link-active']">
+      <a routerLink="/editFile/{{file.id}}">
         <span class='glyphicon glyphicon-file'></span> {{file.name}}
       </a>
     </li>
