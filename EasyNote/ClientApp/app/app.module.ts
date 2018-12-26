@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { NavmenuComponent } from './components/navmenu/navmenu.component';
 import { ConfigService } from './services/config.service';
+import { FilesListComponent } from './components/files-list/files-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavmenuComponent,
+    FilesListComponent
   ],
   imports: [
     BrowserModule,

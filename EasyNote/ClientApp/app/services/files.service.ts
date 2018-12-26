@@ -12,28 +12,29 @@ export class FilesService {
     this.baseUrl = configService.getApiURI() + '/files';
   }
 
-
-  getFile(id : number) {
+  getFile(id: string) {
     const headers = this.configService.createAuthHeaders();
-    return this.http.get(this.baseUrl + '/get/{'+id+'}', { headers })
+    return this.http.get(this.baseUrl + '/get/' + id, { headers })
       .pipe(map(res => res.json()));
   }
+
   getFilesList() {
     const headers = this.configService.createAuthHeaders();
     return this.http.get(this.baseUrl + '/list', { headers })
       .pipe(map(res => res.json()));
   }
-  addFile(name: string, author: string) {
-    let body = JSON.stringify({ name, author});
+
+  createFile(name: string, author: string, content: string) {
+    let body = JSON.stringify({ name, author, content });
     const headers = this.configService.createAuthHeaders();
-    return this.http.post(this.baseUrl + '/create', { body, headers })
-      .pipe(map(res => res.json()));
-  }
-  saveFile(id: number, content: string) {
-    let body = JSON.stringify({ id, content});
-    const headers = this.configService.createAuthHeaders();
-    return this.http.put(this.baseUrl + '/update', { body, headers })
+    return this.http.post(this.baseUrl + '/create', body, { headers })
       .pipe(map(res => res.json()));
   }
 
+  saveFile(id: string, name: string, content: string) {
+    let body = JSON.stringify({ id, name, content });
+    const headers = this.configService.createAuthHeaders();
+    this.http.put(this.baseUrl + '/update', body, { headers })
+      .pipe(map(res => res.json())).subscribe();
+  }
 }

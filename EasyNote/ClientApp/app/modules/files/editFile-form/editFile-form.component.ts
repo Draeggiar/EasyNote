@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-import { FileAdd } from '../model/file.add.interface';
+import { Component, OnInit } from '@angular/core';
+import { File } from '../model/file.interface';
 import { FilesService } from '../../../services/files.service';
-import { Observable } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from 'ClientApp/app/services/user.service';
 
 @Component({
   selector: 'app-editFile-form',
@@ -11,38 +10,41 @@ import { Observable } from 'rxjs';
   styleUrls: ['./editFile-form.component.scss']
 })
 export class EditFileFormComponent implements OnInit {
+  fileId: string;
+  file: File;
 
-  errors: string;
-  isRequesting: boolean;
-  submitted: boolean = false;
-
-  file: Observable<FileAdd>;
-
-  constructor(private filesService: FilesService) {
-
+  constructor(private filesService: FilesService, private route: ActivatedRoute,
+    private userService: UserService, private router: Router) {
   }
 
-  getFile({ value}: { value: FileAdd}) {
-    this.submitted = true;
-    this.isRequesting = true;
-    this.errors = '';
-    this.file = this.filesService.getFile( value.id);
-   
-
-
+  getFile(id: string) {
+    //TODO Spinner przy ładowaniu pliku
+    this.filesService.getFile(id).subscribe(f => this.file = f);
   }
-  saveFile({ value}: { value: FileAdd}) {
-    this.submitted = true;
-    this.isRequesting = true;
-    this.errors = '';
-    this.file = this.filesService.saveFile( value.id ,value.content);
-   
 
-
+  saveFile({ value }: { value: File }) {
+    //TODO Spinner przy zapsie
+    if (this.fileId !== '0') {
+      this.filesService.saveFile(this.fileId, value.name, value.content);
+    }
+    else {
+      let newFileId;
+      this.filesService.createFile(value.name, this.userService.getNameOfLoggedUser(), value.content)
+        .subscribe(f => newFileId = f);
+      this.router.navigateByUrl(this.router.url.replace("id", newFileId));
+    }
   }
+
   ngOnInit() {
-    
+    this.route.paramMap.subscribe(params => {
+      this.fileId = params.get("id");
+
+      if (this.fileId !== '0') {
+        this.getFile(this.fileId);
+      }
+      else {
+        this.file = <File>{ name: "", content: "" };
+      }
+    });
   }
-  
-  
 }

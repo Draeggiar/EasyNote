@@ -4,6 +4,7 @@ using EasyNote.Core.Logic.Accounts;
 using EasyNote.Core.Logic.Files;
 using EasyNote.Core.Model.Accounts;
 using EasyNote.Core.Model.DbEntities;
+using EasyNote.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,6 @@ namespace EasyNote
 
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
@@ -42,15 +42,19 @@ namespace EasyNote
       services.AddScoped<IFilesManager, FilesManager>();
       services.AddScoped<IAccountsManager, AccountsManager>();
 
+      services.AddSignalR();
       services.AddMvc();
+      services.AddCors();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
     {
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+        app.UseCors(builder =>
+          builder.AllowAnyOrigin()
+            .AllowAnyHeader());
       }
       else
       {
@@ -59,6 +63,11 @@ namespace EasyNote
 
       app.UseAuthentication();
       app.UseStaticFiles();
+
+      app.UseSignalR(routes =>
+      {
+        routes.MapHub<EasyNoteHub>("/easynotehub");
+      });
 
       app.UseMvc(routes =>
       {
@@ -122,7 +131,7 @@ namespace EasyNote
         IssuerSigningKey = signingKey,
 
         RequireExpirationTime = false,
-        ValidateLifetime = true,
+        ValidateLifetime = false,
         ClockSkew = TimeSpan.Zero
       };
 

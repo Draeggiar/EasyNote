@@ -1,11 +1,24 @@
-body {
-    margin: 0;
-}
-#textbox {
-    width: 100vw;
-    height: 100vh;
-    font-size: 12pt;
-   
-    /* Center text with flexbox */
-    display: flex;
+.edit-file-container{
+    > .file-menu-wrapper {
+        margin: 8px;
+
+        > button {
+            margin: 5px;
+        }
+    }
+
+    > .file-content-wrapper {
+        > .file-name {
+            font-size: 20px;
+            width: 100%;
+            resize: none;
+        }
+
+       > .file-content {
+            width: 100%;
+            min-height: 80vh;
+            font-size: 12pt;
+            resize: none;
+        }
+    }
 }

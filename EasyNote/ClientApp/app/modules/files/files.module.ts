@@ -3,14 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { FilesService } from 'ClientApp/app/services/files.service';
-import { AddingFileFormComponent } from './addingFile-form/addingFile-form.component';
 import { EditFileFormComponent } from './editFile-form/editFile-form.component';
-
-
+import { UserService } from 'ClientApp/app/services/user.service';
 
 @NgModule({
   declarations: [
-    AddingFileFormComponent,
     EditFileFormComponent
   ],
   imports: [
@@ -19,9 +16,8 @@ import { EditFileFormComponent } from './editFile-form/editFile-form.component';
     SharedModule,
   ],
   exports: [
-    AddingFileFormComponent,
     EditFileFormComponent,
   ],
-  providers: [FilesService]
+  providers: [FilesService, UserService]
 })
 export class FilesModule { }

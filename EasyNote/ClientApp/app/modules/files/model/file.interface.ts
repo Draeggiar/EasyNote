@@ -1,4 +1,4 @@
-export interface FileAdd {
+export interface File {
   id: number;
   name: string;
   author: string;
