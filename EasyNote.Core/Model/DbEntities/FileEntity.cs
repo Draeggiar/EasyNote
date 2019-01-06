@@ -9,5 +9,6 @@ namespace EasyNote.Core.Model.DbEntities
         public string Name { get; set; }
         public string Content { get; set; }
         public string Author { get; set; }
+        public bool IsLocked { get; set; }
     }
 }
