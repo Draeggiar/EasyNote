@@ -38,5 +38,16 @@ namespace EasyNote.SignalR
 
       await Clients.All.SendAsync("FileGotUnlocked", deserialized.Id);
     }
+
+    public async Task RequestUnlockingFile(string fileId, string requestor)
+    {
+      await Clients.All.SendAsync("UnlockFileRequested", fileId, requestor);
+    }
+
+    public async Task ForbidUnlockingFile(string fileId, string forbidder)
+    {
+      await Clients.All.SendAsync("UnlockingFileForbidden", fileId, forbidder);
+    }
+
   }
 }
