@@ -3,6 +3,7 @@ using EasyNote.Core.Model.Files;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using EasyNote.Core.Logic.Files;
 using Microsoft.AspNetCore.Authorization;
@@ -77,7 +78,7 @@ namespace EasyNote.API
       if (!ModelState.IsValid)
         return BadRequest("No file id specified");
 
-      await _filesManager.UpdateFileAsync(file);
+      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
 
       return Ok();
     }
@@ -101,15 +102,25 @@ namespace EasyNote.API
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> Checkout([FromRoute] int? id)
+    public async Task<IActionResult> Checkout([FromRoute] int? fileId)
     {
-      if (!id.HasValue)
+      if (!fileId.HasValue)
         return BadRequest("No file id specified");
 
-      //TODO Tutaj trzeba sprawdzić czy plik nie jest zablokowany
-      // i jeżeli jest to wyświetlić info osobie edytującej,
-      // a jeżeli nie to zablokować
+      var file = await _filesManager.GetFileAsync(fileId.Value);
 
+      if (file == null)
+        return NotFound();
+
+      if (file.IsLocked)
+      {
+        //TODO tutaj poproś o dostęp
+        return Ok(file.ModifiedBy);
+      }
+
+      file.IsLocked = true;
+      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
+      //TODO tutaj powiadom o zablokowaniu 
       return Ok();
     }
   }

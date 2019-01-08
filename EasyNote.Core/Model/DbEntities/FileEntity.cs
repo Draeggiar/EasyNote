@@ -10,5 +10,6 @@ namespace EasyNote.Core.Model.DbEntities
         public string Content { get; set; }
         public string Author { get; set; }
         public bool IsLocked { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }

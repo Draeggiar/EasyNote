@@ -44,9 +44,10 @@ namespace EasyNote.Core.Logic.Files
             return fileEntity == null ? null : _mapper.Map<File>(fileEntity);
         }
 
-        public async Task UpdateFileAsync(File file)
+        public async Task UpdateFileAsync(File file, string updatedBy)
         {
             var fileEntity = _mapper.Map<FileEntity>(file);
+            fileEntity.ModifiedBy = updatedBy;
 
             //TODO TB Wydajność - sprawdzanie czy encja faktycznie się zmieniła
             _dbContext.Entry(fileEntity).State = EntityState.Modified;
