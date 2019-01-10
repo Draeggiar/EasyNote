@@ -1,6 +1,8 @@
 .edit-file-container{
     > .file-menu-wrapper {
-        margin: 8px;
+        padding: 4px;
+        margin: 8px 0px 8px 0px;
+        //background-color: lightgray;
 
         > button {
             margin: 5px;
@@ -16,7 +18,7 @@
 
        > .file-content {
             width: 100%;
-            min-height: 80vh;
+            min-height: 85vh;
             font-size: 12pt;
             resize: none;
         }

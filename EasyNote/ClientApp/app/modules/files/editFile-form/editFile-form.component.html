@@ -3,15 +3,15 @@
     <button type="submit" class="btn btn-primary">
       Zapisz
     </button>
-    <button class="btn btn-danger">
+    <a ng-href='#' (click)='deleteFile()' role="button" class="btn btn-danger">
       Usuń
-    </button>
-    <button class="btn">
+    </a>
+    <a ng-href='#' (click)='checkoutFile()' role="button" class="btn">
       Edytuj
-    </button>
+    </a>
   </div>
   <div class="file-content-wrapper">
-    <!--TODO To musi być readonly, dopóki ktoś nie kliknie 'edytuj' -->
+    <!--TODO To musi być readonly, dopóki ktoś nie kliknie 'edytuj', chyba że to nowy plik -->
     <textarea class="file-name" type="text" name="name" [ngModel]="file.name">{{file.name}}</textarea>
     <textarea class="file-content" type="text" name="content" [ngModel]="file.content">{{file.content}}</textarea>
   </div>

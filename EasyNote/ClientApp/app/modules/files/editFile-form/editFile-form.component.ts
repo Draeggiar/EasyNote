@@ -12,6 +12,7 @@ import { UserService } from 'ClientApp/app/services/user.service';
 export class EditFileFormComponent implements OnInit {
   fileId: string;
   file: File;
+  //TODO trzeba jakoś sprawdzać czy plik jest nowy, żeby nie wyświetlać przycisków do usuwania i edycji
 
   constructor(private filesService: FilesService, private route: ActivatedRoute,
     private userService: UserService, private router: Router) {
@@ -33,6 +34,15 @@ export class EditFileFormComponent implements OnInit {
         .subscribe(f => newFileId = f);
       this.router.navigateByUrl(this.router.url.replace("id", newFileId));
     }
+  }
+
+  deleteFile() {
+    this.filesService.deleteFile(this.fileId);
+    this.router.navigateByUrl('/home');
+  }
+
+  checkoutFile(){
+    //TODO Edycja pliku
   }
 
   ngOnInit() {

@@ -19,4 +19,6 @@ export class FilesListComponent implements OnInit {
     //TODO Spinner przy ładowaniu listy plików
     this.filesList = this.filesService.getFilesList();
   }
+
+  //TODO Trzeba wymyślić jakiś sposób na odświeżanie listy plików z poza tego komponentu, np. po dodaniu albo usunięciu pliku 
 }
