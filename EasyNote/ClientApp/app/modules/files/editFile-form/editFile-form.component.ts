@@ -12,27 +12,30 @@ import { UserService } from 'ClientApp/app/services/user.service';
 export class EditFileFormComponent implements OnInit {
   fileId: string;
   file: File;
-  //TODO trzeba jakoś sprawdzać czy plik jest nowy, żeby nie wyświetlać przycisków do usuwania i edycji
+  isLoaded: Promise<boolean>
 
   constructor(private filesService: FilesService, private route: ActivatedRoute,
     private userService: UserService, private router: Router) {
   }
 
   getFile(id: string) {
-    //TODO Spinner przy ładowaniu pliku
-    this.filesService.getFile(id).subscribe(f => this.file = f);
+    this.filesService.getFile(id)
+      .subscribe(f => {
+        this.file = f;
+        this.file.isNew = false;
+        this.file.isCheckouted = false;
+        this.isLoaded = Promise.resolve(true);
+      });
   }
 
   saveFile({ value }: { value: File }) {
-    //TODO Spinner przy zapsie
     if (this.fileId !== '0') {
       this.filesService.saveFile(this.fileId, value.name, value.content);
+      this.file.isCheckouted = false;
     }
     else {
-      let newFileId;
       this.filesService.createFile(value.name, this.userService.getNameOfLoggedUser(), value.content)
-        .subscribe(f => newFileId = f);
-      this.router.navigateByUrl(this.router.url.replace("id", newFileId));
+        .subscribe(fileId => this.router.navigateByUrl(this.router.url.replace("0", fileId)));
     }
   }
 
@@ -41,8 +44,9 @@ export class EditFileFormComponent implements OnInit {
     this.router.navigateByUrl('/home');
   }
 
-  checkoutFile(){
-    //TODO Edycja pliku
+  checkoutFile() {
+    //TODO Checkout w API
+    this.file.isCheckouted = !this.file.isCheckouted;
   }
 
   ngOnInit() {
@@ -50,11 +54,16 @@ export class EditFileFormComponent implements OnInit {
       this.fileId = params.get("id");
 
       if (this.fileId !== '0') {
-        this.getFile(this.fileId);
+        this.getFile(this.fileId); //Uwaga, to jest asynchroniczne
       }
       else {
-        this.file = <File>{ name: "", content: "" };
+        this.file = <File>{ name: "", content: "", isNew: true, isCheckouted: true };
+        this.isLoaded = Promise.resolve(true);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.file = null;
   }
 }

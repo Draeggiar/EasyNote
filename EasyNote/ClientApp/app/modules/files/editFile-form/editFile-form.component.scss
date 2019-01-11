@@ -1,26 +1,30 @@
-.edit-file-container{
-    > .file-menu-wrapper {
-        padding: 4px;
-        margin: 8px 0px 8px 0px;
-        //background-color: lightgray;
+.edit-file-container {
+  > .file-menu-wrapper {
+    padding: 4px;
+    margin: 8px 0px 8px 0px;
 
-        > button {
-            margin: 5px;
-        }
+    > .btn {
+      margin: 5px;
+    }
+  }
+
+  > .file-content-wrapper {     
+    > .file-name {
+      font-size: 20px;
+      width: 100%;
+      resize: none;
     }
 
-    > .file-content-wrapper {
-        > .file-name {
-            font-size: 20px;
-            width: 100%;
-            resize: none;
-        }
-
-       > .file-content {
-            width: 100%;
-            min-height: 85vh;
-            font-size: 12pt;
-            resize: none;
-        }
+    > .file-content {
+      width: 100%;
+      min-height: 82vh;
+      font-size: 12pt;
+      resize: none;
     }
+
+    > textarea[readonly] {
+        background-color: lightgray;
+        outline: none;
+    }
+  }
 }

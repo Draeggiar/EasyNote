@@ -1,18 +1,17 @@
-<form class="edit-file-container" #f="ngForm" novalidate (ngSubmit)="saveFile(f)">
+<form *ngIf="isLoaded | async" class="edit-file-container" #f="ngForm" novalidate (ngSubmit)="saveFile(f)">
   <div class="file-menu-wrapper">
     <button type="submit" class="btn btn-primary">
       Zapisz
     </button>
-    <a ng-href='#' (click)='deleteFile()' role="button" class="btn btn-danger">
+    <a ng-href='#' (click)='deleteFile()' role="button" class="btn btn-danger" [ngStyle]="file.isCheckouted ? file.isNew ? {'visibility': 'hidden'} : {'visibility': 'visible'} : {'visibility': 'hidden'}">
       Usuń
     </a>
-    <a ng-href='#' (click)='checkoutFile()' role="button" class="btn">
-      Edytuj
+    <a ng-href='#' (click)='checkoutFile()' role="button" class="btn btn-default" [ngStyle]="{'visibility': file.isNew ? 'hidden' : 'visible'}">
+      {{file.isCheckouted ? 'Anuluj edycję' : 'Edytuj'}}
     </a>
   </div>
   <div class="file-content-wrapper">
-    <!--TODO To musi być readonly, dopóki ktoś nie kliknie 'edytuj', chyba że to nowy plik -->
-    <textarea class="file-name" type="text" name="name" [ngModel]="file.name">{{file.name}}</textarea>
-    <textarea class="file-content" type="text" name="content" [ngModel]="file.content">{{file.content}}</textarea>
+    <textarea class="file-name" type="text" name="name" [ngModel]="file.name" [readonly]="!file.isCheckouted">{{file.name}}</textarea>
+    <textarea class="file-content" type="text" name="content" [ngModel]="file.content" [readonly]="!file.isCheckouted">{{file.content}}</textarea>
   </div>
 </form>

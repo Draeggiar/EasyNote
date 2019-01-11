@@ -1,23 +1,24 @@
-<div *ngIf="!isLoggedIn">
-  <span>
-    <h1>Witaj w aplikacji EasyNote!</h1>
-    <h2>Masz już konto? Zaloguj się, lub załóż je teraz.</h2>
-  </span>
-  <div>
-    <a class="btn btn-primary" href="#" role="button" [routerLink]="['/login']">
-      Logowanie
-    </a>
-  </div>
-  <div>
-    <a class="btn btn-secondary" href="#" role="button" [routerLink]="['/register']">
-      Rejestracja
-    </a>
-  </div>
-</div>
+<div class="home-page">
+  <div *ngIf="!isLoggedIn">
+    <div class="welcome-text">
+      <h1>Witaj w aplikacji EasyNote!</h1>
+      <h2>Masz już konto? Zaloguj się, lub załóż je teraz.</h2>
+    </div>
 
-<div *ngIf="isLoggedIn">
-  <span>
-    <h2>Witaj {{userName}}</h2>
-  </span>
-  <a class="nav-link" (click)="logout()" href="#">Wyloguj</a>
+    <div>
+      <a class="btn btn-primary" href="#" role="button" [routerLink]="['/login']">
+        Logowanie
+      </a>
+      <a class="btn btn-default" href="#" role="button" [routerLink]="['/register']">
+        Rejestracja
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="isLoggedIn">
+    <span class="welcome-text">
+      <h2>Witaj {{userName}}</h2>
+    </span>
+    <a class="btn btn-primary" href="#" role="button" (click)="logout()" href="#">Wyloguj</a>
+  </div>
 </div>

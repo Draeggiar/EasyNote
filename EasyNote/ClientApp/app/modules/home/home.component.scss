@@ -1,12 +1,12 @@
-body {
-    margin: 0;
-}
-#textbox {
-    width: 100vw;
-    height: 100vh;
-    font-size: 12pt;
-   
-    /* Center text with flexbox */
-    display: flex;
-   
+.home-page {
+  .welcome-text {
+    > h1,
+    > h2 {
+      color: white;
+    }
+  }
+
+  .btn {
+    margin: 5px;
+  }
 }

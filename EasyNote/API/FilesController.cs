@@ -115,13 +115,21 @@ namespace EasyNote.API
       if (file.IsLocked)
       {
         //TODO tutaj poproś o dostęp
-        return Ok(file.ModifiedBy);
+        return Ok(new
+        {
+          canCheckout = false,
+          file.ModifiedBy
+        });
       }
 
       file.IsLocked = true;
       await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
       //TODO tutaj powiadom o zablokowaniu 
-      return Ok();
+      return Ok(
+        new
+        {
+          canCheckout = true,
+        });
     }
   }
 }
