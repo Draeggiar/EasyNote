@@ -7,17 +7,22 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using EasyNote.Core.Logic.Files;
 using Microsoft.AspNetCore.Authorization;
+using EasyNote.SignalR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace EasyNote.API
 {
-  [Authorize(Policy = "ApiUser")]
+  //[Authorize(Policy = "ApiUser")]
   public class FilesController : Controller
   {
     private readonly IFilesManager _filesManager;
+    private readonly IHubContext<EasyNoteHub> _signalRHub;
 
-    public FilesController(IFilesManager filesManager)
+    public FilesController(IFilesManager filesManager,
+                            IHubContext<EasyNoteHub> signalRHub)
     {
       _filesManager = filesManager;
+      _signalRHub = signalRHub;
     }
 
     //GET /files/list
@@ -115,6 +120,9 @@ namespace EasyNote.API
       if (file.IsLocked)
       {
         //TODO tutaj poproś o dostęp
+        await _signalRHub.Clients.All.SendAsync("UnlockFileRequested",
+           new { fileId = file.Id.ToString(), requestor = HttpContext.User.FindFirstValue(ClaimTypes.Name) });
+
         return Ok(new
         {
           canCheckout = false,
@@ -124,7 +132,9 @@ namespace EasyNote.API
 
       file.IsLocked = true;
       await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
-      //TODO tutaj powiadom o zablokowaniu 
+      //TODO tutaj powiadom o zablokowaniu
+      await _signalRHub.Clients.All.SendAsync("FileGotLocked", file.Id.ToString());
+
       return Ok(
         new
         {
