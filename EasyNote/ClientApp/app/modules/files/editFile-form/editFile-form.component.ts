@@ -30,7 +30,7 @@ export class EditFileFormComponent implements OnInit  {
         this.isLoaded = Promise.resolve(true);
       });
   }
-  myEvent = new EventEmitter();
+
   saveFile({ value }: { value: File }) {
     if (this.fileId !== '0') {
       this.filesService.saveFile(this.fileId, value.name, value.content);
@@ -39,9 +39,9 @@ export class EditFileFormComponent implements OnInit  {
     }
     else {
       this.filesService.createFile(value.name, this.userService.getNameOfLoggedUser(), value.content)
-        .subscribe(f => newFileId = f);
+        .subscribe(f => this.fileId = f);
         this.filesList = this.filesService.getFilesList();
-      this.router.navigateByUrl(this.router.url.replace("id", newFileId));
+      this.router.navigateByUrl(this.router.url.replace("id", this.fileId));
       window.location.reload();
       }
 
