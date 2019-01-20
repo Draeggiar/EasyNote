@@ -10,7 +10,7 @@ namespace EasyNote.Core.Logic.Files
         Task<IEnumerable<File>> GetFilesListAsync();
         Task<int> AddFileAsync(FileEntity fileParams);
         Task<File> GetFileAsync(int idValue);
-        Task UpdateFileAsync(File file);
+        Task UpdateFileAsync(File file, string updatedBy);
         Task DeleteFileAsync(int fileId);
     }
 }

@@ -29,12 +29,11 @@ namespace EasyNote.Core.Logic.Files
 
         public async Task<int> AddFileAsync(FileEntity fileEntity)
         {
-            var newFileId = _dbContext.Files.Add(fileEntity).Entity.Id;
-
+            _dbContext.Files.Add(fileEntity);
             if (await _dbContext.SaveChangesAsync() < 1)
                 throw new InvalidOperationException("Could not add file to database");
 
-            return newFileId;
+            return fileEntity.Id;
         }
 
         public async Task<File> GetFileAsync(int idValue)
@@ -44,12 +43,18 @@ namespace EasyNote.Core.Logic.Files
             return fileEntity == null ? null : _mapper.Map<File>(fileEntity);
         }
 
-        public async Task UpdateFileAsync(File file)
+        public async Task UpdateFileAsync(File file, string updatedBy)
         {
             var fileEntity = _mapper.Map<FileEntity>(file);
+            var fileEntityFromDb = _dbContext.Entry(fileEntity);
 
-            //TODO TB Wydajność - sprawdzanie czy encja faktycznie się zmieniła
-            _dbContext.Entry(fileEntity).State = EntityState.Modified;
+            if(fileEntityFromDb.State == EntityState.Unchanged)
+                return;
+
+            fileEntity.ModifiedBy = updatedBy;
+            fileEntity.IsLocked = false;
+            fileEntityFromDb.State = EntityState.Modified;  
+
             await _dbContext.SaveChangesAsync();
         }
 

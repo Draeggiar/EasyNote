@@ -3,4 +3,7 @@ export interface File {
   name: string;
   author: string;
   content: string;
+  modifiedBy: string;
+  isNew: boolean;
+  isCheckouted: boolean;
 }

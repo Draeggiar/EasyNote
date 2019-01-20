@@ -37,4 +37,9 @@ export class FilesService {
     this.http.put(this.baseUrl + '/update', body, { headers })
       .pipe(map(res => res.json())).subscribe();
   }
+
+  deleteFile(id: string) {
+    const headers = this.configService.createAuthHeaders();
+    return this.http.get(this.baseUrl + '/delete/' + id, { headers }).subscribe();
+  }
 }
