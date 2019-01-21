@@ -121,11 +121,15 @@ namespace EasyNote.API
       if (file == null)
         return NotFound();
 
+      var userName = User.FindFirst(ClaimTypes.Name);
+      if (userName == null)
+        userName = User.FindFirst(ClaimTypes.NameIdentifier);
+
       if (file.IsLocked)
       {
         //TODO tutaj poproś o dostęp
         await _signalRHub.Clients.All.SendAsync("UnlockFileRequested",
-           new { fileId = file.Id.ToString(), requestor = HttpContext.User.FindFirstValue(ClaimTypes.Name) });
+           new { fileId = file.Id.ToString(), requestor = userName.Value });
 
         return Ok(new
         {
@@ -135,7 +139,7 @@ namespace EasyNote.API
       }
 
       file.IsLocked = true;
-      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
+      await _filesManager.UpdateFileAsync(file, userName.Value);
       //TODO tutaj powiadom o zablokowaniu
       await _signalRHub.Clients.All.SendAsync("FileGotLocked", file.Id.ToString());
 
