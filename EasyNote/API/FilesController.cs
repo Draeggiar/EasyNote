@@ -83,7 +83,11 @@ namespace EasyNote.API
       if (!ModelState.IsValid)
         return BadRequest("No file id specified");
 
-      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
+      var userName = User.FindFirst(ClaimTypes.Name);
+      if(userName == null)
+        userName = User.FindFirst(ClaimTypes.NameIdentifier);
+
+      await _filesManager.UpdateFileAsync(file, userName.Value);
 
       return Ok();
     }
