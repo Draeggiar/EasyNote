@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace EasyNote.API
 {
-  //[Authorize(Policy = "ApiUser")]
+  [Authorize(Policy = "ApiUser")]
   public class FilesController : Controller
   {
     private readonly IFilesManager _filesManager;
