@@ -48,6 +48,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
           result => {
             if (result) {
               this.router.navigate(['/home']);
+              window.location.reload();
             } 
           },
           error => this.errors = error);

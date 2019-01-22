@@ -54,7 +54,8 @@ namespace EasyNote
         app.UseDeveloperExceptionPage();
         app.UseCors(builder =>
           builder.AllowAnyOrigin()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowAnyMethod());
       }
       else
       {

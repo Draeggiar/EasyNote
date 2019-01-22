@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FilesService } from 'ClientApp/app/services/files.service';
 import { File } from "../../modules/files/model/file.interface";
+import { UserService } from 'ClientApp/app/services/user.service';
 
 @Component({
   selector: 'files-list',
@@ -12,13 +13,15 @@ import { File } from "../../modules/files/model/file.interface";
 export class FilesListComponent implements OnInit {
   filesList: Observable<File>;
 
-  constructor(private filesService: FilesService) {
+  constructor(private filesService: FilesService, private userService: UserService) {
   }
 
   ngOnInit() {
-    //TODO Spinner przy ładowaniu listy plików
-    this.filesList = this.filesService.getFilesList();
+    this.getFilesList();
   }
 
-  //TODO Trzeba wymyślić jakiś sposób na odświeżanie listy plików z poza tego komponentu, np. po dodaniu albo usunięciu pliku 
+  getFilesList() {
+    if (this.userService.isLoggedIn())
+      this.filesList = this.filesService.getFilesList();
+  }
 }

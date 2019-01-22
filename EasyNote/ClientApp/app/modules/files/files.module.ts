@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { FilesService } from 'ClientApp/app/services/files.service';
 import { EditFileFormComponent } from './editFile-form/editFile-form.component';
 import { UserService } from 'ClientApp/app/services/user.service';
+import { SocketService } from 'ClientApp/app/services/socket.service';
 
 @NgModule({
   declarations: [
@@ -12,12 +13,12 @@ import { UserService } from 'ClientApp/app/services/user.service';
   ],
   imports: [
     CommonModule,
-    FormsModule,  
+    FormsModule,
     SharedModule,
   ],
   exports: [
     EditFileFormComponent,
   ],
-  providers: [FilesService, UserService]
+  providers: [FilesService, UserService, SocketService]
 })
 export class FilesModule { }

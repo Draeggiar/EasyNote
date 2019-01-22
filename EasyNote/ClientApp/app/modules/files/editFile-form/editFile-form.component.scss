@@ -8,23 +8,25 @@
     }
   }
 
-  > .file-content-wrapper {     
+  > .file-content-wrapper {
     > .file-name {
       font-size: 20px;
       width: 100%;
       resize: none;
+      height: 35px;
+      margin-bottom: 5px;
     }
 
     > .file-content {
       width: 100%;
-      min-height: 82vh;
+      min-height: 75vh;
       font-size: 12pt;
       resize: none;
     }
 
     > textarea[readonly] {
-        background-color: lightgray;
-        outline: none;
+      background-color: lightgray;
+      outline: none;
     }
   }
 }

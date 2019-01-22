@@ -34,12 +34,17 @@ export class FilesService {
   saveFile(id: string, name: string, content: string) {
     let body = JSON.stringify({ id, name, content });
     const headers = this.configService.createAuthHeaders();
-    this.http.put(this.baseUrl + '/update', body, { headers })
-      .pipe(map(res => res.json())).subscribe();
+    return this.http.put(this.baseUrl + '/update', body, { headers });
   }
 
   deleteFile(id: string) {
     const headers = this.configService.createAuthHeaders();
     return this.http.get(this.baseUrl + '/delete/' + id, { headers }).subscribe();
+  }
+
+  checkoutFile(id: string, cancelCheckout: boolean) {
+    const headers = this.configService.createAuthHeaders();
+    return this.http.get(this.baseUrl + '/checkout/' + id + "?cancelCheckout=" + cancelCheckout, { headers })
+      .pipe(map(res => res.json()));
   }
 }

@@ -45,15 +45,14 @@ namespace EasyNote.Core.Logic.Files
 
         public async Task UpdateFileAsync(File file, string updatedBy)
         {
-            var fileEntity = _mapper.Map<FileEntity>(file);
-            var fileEntityFromDb = _dbContext.Entry(fileEntity);
+            var existingEntity = _dbContext.Files.Find(file.Id);
+            if (existingEntity != null)
+            {
+                var fileEntityFromDb = _dbContext.Entry(existingEntity);
+                var updatedFileEntity = _mapper.Map<FileEntity>(file);
 
-            if(fileEntityFromDb.State == EntityState.Unchanged)
-                return;
-
-            fileEntity.ModifiedBy = updatedBy;
-            fileEntity.IsLocked = false;
-            fileEntityFromDb.State = EntityState.Modified;  
+                fileEntityFromDb.CurrentValues.SetValues(updatedFileEntity);
+            }
 
             await _dbContext.SaveChangesAsync();
         }

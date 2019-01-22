@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace EasyNote.API
 {
-  //[Authorize(Policy = "ApiUser")]
+  [Authorize(Policy = "ApiUser")]
   public class FilesController : Controller
   {
     private readonly IFilesManager _filesManager;
@@ -83,7 +83,7 @@ namespace EasyNote.API
       if (!ModelState.IsValid)
         return BadRequest("No file id specified");
 
-      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
+      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
       return Ok();
     }
@@ -107,21 +107,30 @@ namespace EasyNote.API
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> Checkout([FromRoute] int? fileId)
+    public async Task<IActionResult> Checkout([FromRoute] int? id, bool? cancelCheckout)
     {
-      if (!fileId.HasValue)
+      if (!id.HasValue)
         return BadRequest("No file id specified");
 
-      var file = await _filesManager.GetFileAsync(fileId.Value);
+      var file = await _filesManager.GetFileAsync(id.Value);
 
       if (file == null)
         return NotFound();
 
       if (file.IsLocked)
       {
-        //TODO tutaj poproś o dostęp
+        if (cancelCheckout.HasValue && cancelCheckout.Value)
+        {
+          file.IsLocked = false;
+          await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.NameIdentifier).Value);
+          return Ok(new
+          {
+            canCheckout = true
+          });
+        }
+
         await _signalRHub.Clients.All.SendAsync("UnlockFileRequested",
-           new { fileId = file.Id.ToString(), requestor = HttpContext.User.FindFirstValue(ClaimTypes.Name) });
+           new { fileId = file.Id.ToString(), requestor = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) });
 
         return Ok(new
         {
@@ -131,8 +140,7 @@ namespace EasyNote.API
       }
 
       file.IsLocked = true;
-      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.Name).Value);
-      //TODO tutaj powiadom o zablokowaniu
+      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.NameIdentifier).Value);
       await _signalRHub.Clients.All.SendAsync("FileGotLocked", file.Id.ToString());
 
       return Ok(
