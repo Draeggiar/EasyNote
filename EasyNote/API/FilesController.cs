@@ -83,7 +83,11 @@ namespace EasyNote.API
       if (!ModelState.IsValid)
         return BadRequest("No file id specified");
 
-      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.NameIdentifier).Value);
+      var userName = User.FindFirst(ClaimTypes.Name);
+      if(userName == null)
+        userName = User.FindFirst(ClaimTypes.NameIdentifier);
+
+      await _filesManager.UpdateFileAsync(file, userName.Value);
 
       return Ok();
     }
@@ -117,6 +121,10 @@ namespace EasyNote.API
       if (file == null)
         return NotFound();
 
+      var userName = User.FindFirst(ClaimTypes.Name);
+      if (userName == null)
+        userName = User.FindFirst(ClaimTypes.NameIdentifier);
+
       if (file.IsLocked)
       {
         if (cancelCheckout.HasValue && cancelCheckout.Value)
@@ -130,7 +138,7 @@ namespace EasyNote.API
         }
 
         await _signalRHub.Clients.All.SendAsync("UnlockFileRequested",
-           new { fileId = file.Id.ToString(), requestor = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) });
+           new { fileId = file.Id.ToString(), requestor = userName.Value });
 
         return Ok(new
         {
@@ -140,7 +148,7 @@ namespace EasyNote.API
       }
 
       file.IsLocked = true;
-      await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.NameIdentifier).Value);
+      await _filesManager.UpdateFileAsync(file, userName.Value);
       await _signalRHub.Clients.All.SendAsync("FileGotLocked", file.Id.ToString());
 
       return Ok(

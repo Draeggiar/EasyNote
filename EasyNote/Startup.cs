@@ -154,6 +154,7 @@ namespace EasyNote
       });
 
       services.AddSingleton<IJwtFactory, JwtFactory>();
+      services.AddHttpContextAccessor();
     }
   }
 }
