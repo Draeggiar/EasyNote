@@ -1,6 +1,6 @@
 <form *ngIf="isLoaded | async" class="edit-file-container" #f="ngForm" novalidate (ngSubmit)="saveFile(f)">
   <div class="file-menu-wrapper">
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn btn-primary" [ngStyle]="file.isCheckouted ? {'visibility': 'visible'} : {'visibility': 'hidden'}">
       Zapisz
     </button>
     <a ng-href='#' (click)='deleteFile()' role="button" class="btn btn-danger" [ngStyle]="file.isCheckouted ? file.isNew ? {'visibility': 'hidden'} : {'visibility': 'visible'} : {'visibility': 'hidden'}">

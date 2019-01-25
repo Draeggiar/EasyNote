@@ -24,7 +24,7 @@ namespace EasyNote.SignalR
 
       deserialized.IsLocked = true;
 
-      await _filesManager.UpdateFileAsync(deserialized, _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
+      await _filesManager.UpdateFileAsync(deserialized, _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
       await Clients.All.SendAsync("FileGotLocked", deserialized.Id);
     }
@@ -35,7 +35,7 @@ namespace EasyNote.SignalR
 
       deserialized.IsLocked = false;
 
-      await _filesManager.UpdateFileAsync(deserialized, _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
+      await _filesManager.UpdateFileAsync(deserialized, _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
       await Clients.All.SendAsync("FileGotUnlocked", deserialized.Id);
     }
