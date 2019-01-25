@@ -48,9 +48,10 @@ namespace EasyNote.Core.Logic.Files
             var existingEntity = _dbContext.Files.Find(file.Id);
             if (existingEntity != null)
             {
-                var fileEntityFromDb = _dbContext.Entry(existingEntity);
                 var updatedFileEntity = _mapper.Map<FileEntity>(file);
+                updatedFileEntity.ModifiedBy = updatedBy;
 
+                var fileEntityFromDb = _dbContext.Entry(existingEntity);
                 fileEntityFromDb.CurrentValues.SetValues(updatedFileEntity);
             }
 

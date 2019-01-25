@@ -15,5 +15,5 @@ export class SocketService {
       .build();
   }
 
-  //TODO odświeżanie listy plików
+  //TODO odświeżanie listy plików po odebraniu wiadomości (filesService.refreshFilesList())
 }

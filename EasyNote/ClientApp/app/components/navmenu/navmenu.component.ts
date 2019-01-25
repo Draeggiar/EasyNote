@@ -14,16 +14,7 @@ export class NavmenuComponent implements OnInit {
  public cacheFiles: FileController[];
  public summaries: any[];
 
- //constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
- //  http.get<FileController[]>(baseUrl + 'API/FileController/files/list').subscribe(result => {
- //    this.files = result;
- //  }, error => console.error(error));
-
- // }
-
-
   ngOnInit() {
-    //TODO Wyświetlanie plików tylko dla zalogowanych
   }
 
 }

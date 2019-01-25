@@ -36,13 +36,14 @@ export class EditFileFormComponent implements OnInit {
       this.filesService.saveFile(this.fileId, value.name, value.content)
         .subscribe(() => {
           this.file.isCheckouted = false;
-          window.location.reload();
+          this.filesService.refreshFilesList();
         });
     }
     else {
       this.filesService.createFile(value.name, this.userService.getNameOfLoggedUser(), value.content)
         .subscribe(f => {
-          this.router.navigateByUrl(this.router.url.replace("id", f));
+          this.router.navigateByUrl(this.router.url.replace("0", f));
+          this.filesService.refreshFilesList();
         });
     }
   }
@@ -50,14 +51,14 @@ export class EditFileFormComponent implements OnInit {
   deleteFile() {
     this.filesService.deleteFile(this.fileId);
     this.router.navigateByUrl('/home');
-    window.location.reload();
+    this.filesService.refreshFilesList();
   }
 
   checkoutFile() {
     this.filesService.checkoutFile(this.fileId, this.file.isCheckouted)
       .subscribe(r => {
         if (r.canCheckout === false)
-          window.alert("Plik zablokowany przez " + r.ModifiedBy);
+          window.alert("Plik zablokowany przez użytkownika " + r.lockedBy);
         else
           this.file.isCheckouted = !this.file.isCheckouted;
       });

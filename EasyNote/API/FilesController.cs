@@ -83,11 +83,10 @@ namespace EasyNote.API
       if (!ModelState.IsValid)
         return BadRequest("No file id specified");
 
-      var userName = User.FindFirst(ClaimTypes.Name);
-      if(userName == null)
-        userName = User.FindFirst(ClaimTypes.NameIdentifier);
+      var userName = User.FindFirst(ClaimTypes.Name) ?? User.FindFirst(ClaimTypes.NameIdentifier);
 
       await _filesManager.UpdateFileAsync(file, userName.Value);
+      await _signalRHub.Clients.All.SendAsync("FilesListChanged");
 
       return Ok();
     }
@@ -102,6 +101,7 @@ namespace EasyNote.API
         return BadRequest("No file id specified");
 
       await _filesManager.DeleteFileAsync(id.Value);
+      await _signalRHub.Clients.All.SendAsync("FilesListChanged");
 
       return Ok();
     }
@@ -111,7 +111,7 @@ namespace EasyNote.API
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> Checkout([FromRoute] int? id, bool? cancelCheckout)
+    public async Task<IActionResult> Checkout([FromRoute] int? id)
     {
       if (!id.HasValue)
         return BadRequest("No file id specified");
@@ -121,16 +121,14 @@ namespace EasyNote.API
       if (file == null)
         return NotFound();
 
-      var userName = User.FindFirst(ClaimTypes.Name);
-      if (userName == null)
-        userName = User.FindFirst(ClaimTypes.NameIdentifier);
+      var userName = User.FindFirst(ClaimTypes.Name) ?? User.FindFirst(ClaimTypes.NameIdentifier);
 
       if (file.IsLocked)
       {
-        if (cancelCheckout.HasValue && cancelCheckout.Value)
+        if (file.ModifiedBy == userName.Value)
         {
           file.IsLocked = false;
-          await _filesManager.UpdateFileAsync(file, User.FindFirst(ClaimTypes.NameIdentifier).Value);
+          await _filesManager.UpdateFileAsync(file, userName.Value);
           return Ok(new
           {
             canCheckout = true
@@ -143,7 +141,7 @@ namespace EasyNote.API
         return Ok(new
         {
           canCheckout = false,
-          file.ModifiedBy
+          lockedBy = file.ModifiedBy
         });
       }
 
